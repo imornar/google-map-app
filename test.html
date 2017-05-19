@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="test">
+<head>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style></style>
+</head>
+<body>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1qXpvyw5RQL6qaEc6K7wuho6I94wTuHE"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+<script src="./main.module.js"></script>
+<script src="./main.controller.js"></script>
+    <div ng-controller="MainCtrl"></div>
+</body>
+</html>
+
+
+<!--
+
+The task is to use an external api, fetch the information, display the results on both a map and as a simple card.
+** "google" will be bound to the window and will be accessible to use their maps api and geocoding
+
+
+1. We will be using https://randomuser.me/ the url is provided in the main controller to get a couple of user profiles.
+2. Show these profiles in a simple box, with email, first name, last name, and picture
+3. Using the profiles' location, geocode the address to get its lat-lon
+4. With the lat-lon display markers on a map corresponding to their location
+
+
+
+Extra credit:
+- making the card look nice
+- have it be responsive to mobile
+- add interactions (i.e. hover the card, will make the corresponding marker jump)
+- use components and additional files
+
+-->
