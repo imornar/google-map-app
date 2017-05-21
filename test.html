@@ -1,16 +1,109 @@
 <!DOCTYPE html>
-<html ng-app="test">
+<html ng-app="googleMapApp">
 <head>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-    <style></style>
+    <link rel="stylesheet" href="./users/users.css"/>
+    <link rel="stylesheet" href="./components/user-card/user.card.css"/>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.css"/>
 </head>
 <body>
+<!-- NOTE: using ng-template because code is not served from webServer so running into cross origin request issues -->
+<script type="text/ng-template" id="user-card.html">
+    <md-whiteframe class="md-whiteframe-2dp" flex
+                   ng-mouseenter="us.enter()"
+                   ng-mouseleave="us.leave()">
+
+        <div layout="column" flex>
+
+            <div layout="row" class="header" flex="none">
+                <img ng-if="us.pinned === us.user.id.value" class="pin-icon" ng-src="assets/pin.png" alt="Pin">
+                <div flex="none" class="image-wrapper" ng-if="us.target !== 'map'">
+                    <img ng-src="{{ ::us.user.picture.medium }}" class="profile-image"
+                         ng-srcset="{{ ::us.user.picture.medium }} 1x, {{ ::us.user.picture.large }} 2x, {{ ::us.user.picture.large }} 3x"
+                         alt="user-image">
+                </div>
+                <div flex="none" class="user-name">{{ ::us.user | displayName }}</div>
+            </div>
+
+            <div flex="none" layout="column" class="user-info">
+                <div layout="row" layout-align="start center" class="user-detail">
+                    <img class="icon" ng-src="assets/marker.png" alt="Marker">
+                    <span class="value">{{ ::us.user.location.street }}, {{ ::us.user.location.state }}</span>
+                </div>
+                <div layout="row" layout-align="start center" class="user-detail">
+                    <img class="icon" ng-src="assets/email.png" alt="Email">
+                    <span class="value">{{ ::us.user.email }}</span>
+                </div>
+                <div layout="row" layout-align="start center" class="user-detail">
+                    <img class="icon" ng-src="assets/phone.png" alt="Phone">
+                    <span class="value">{{ ::us.user.phone }}</span>
+                </div>
+            </div>
+
+        </div>
+    </md-whiteframe>
+</script>
+<script type="text/ng-template" id="user-map-card.html">
+    <user-card user="parameter" target="map"></user-card>
+</script>
+<!-- End ng-template -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1qXpvyw5RQL6qaEc6K7wuho6I94wTuHE"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-animate.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-aria.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-messages.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.6/angular-resource.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-simple-logger/0.1.7/angular-simple-logger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-google-maps/2.4.1/angular-google-maps.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
 <script src="./main.module.js"></script>
-<script src="./main.controller.js"></script>
-    <div ng-controller="MainCtrl"></div>
+<script src="./users/users.module.js"></script>
+<script src="./resources/users.js"></script>
+<script src="./services/users.js"></script>
+<script src="./services/map.js"></script>
+<script src="./filters/display.name.js"></script>
+<script src="./components/user-card/user.card.js"></script>
+<script src="./users/users.controller.js"></script>
+    <div ng-controller="UsersCtrl as vm" class="map-app">
+
+        <ui-gmap-google-map center="vm.map.center"
+                            zoom="vm.map.zoom"
+                            ng-if="vm.map"
+                            events="vm.map.events"
+                            control="vm.map.control">
+
+            <ui-gmap-window show="vm.map.window.show"
+                            coords="vm.map.window.model"
+                            control="vm.map.window"
+                            templateUrl="'user-map-card.html'"
+                            templateParameter="vm.map.window.model.user"
+                            options="vm.map.window.options">
+            </ui-gmap-window>
+
+            <ui-gmap-markers models="vm.markers"
+                             fit="true"
+                             options="'options'"
+                             coords="'self'"
+                             icon="'icon'"
+                             events="vm.map.markersEvents"
+                             options="vm.markersOptions"
+                             ng-if="vm.markers">
+            </ui-gmap-markers>
+
+        </ui-gmap-google-map>
+
+        <div layout="row" layout-wrap layout-margin layout-align="space-between">
+
+            <user-card ng-repeat="user in vm.users track by user.id.value"
+                       user="user" marker="vm.getMarker(user.id.value)" pinned="vm.map.window.pinned" class="user-card"
+                       flex-xs="100" flex-sm="45" flex-gt-sm="30" flex-gt-md="30" layout="column">
+            </user-card>
+
+        </div>
+
+    </div>
 </body>
 </html>
 

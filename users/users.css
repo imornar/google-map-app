@@ -1,0 +1,19 @@
+.angular-google-map-container {
+    height: 400px;
+}
+
+.map-app {
+    margin: 40px 40px 0 40px;
+}
+
+img[src^='https://randomuser.me'] {
+    border-radius: 50%;
+}
+
+.gm-style-iw + div {
+    display: none;
+}
+
+.gm-style-iw {
+    text-align: center;
+}

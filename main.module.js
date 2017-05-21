@@ -1,3 +1,9 @@
 (function () {
-    angular.module('test', []);
+     'use strict';
+
+     angular.module('googleMapApp', [
+          'ngResource',
+          'ngMaterial',
+          'users'
+     ])
 }());
